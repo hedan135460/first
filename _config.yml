@@ -98,13 +98,3 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: stellar
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: ''
-
-
-deploy:
-  type: git
-  repo: https://github.com/hedan135460/hello.github.io.git
-  branch: main
