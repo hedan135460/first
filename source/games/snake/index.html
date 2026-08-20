@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贪吃蛇</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f7f7f7;font-family:Arial;display:flex;flex-direction:column;align-items:center;padding-top:20px}
+#score{font-size:24px;margin-bottom:10px;font-weight:bold}
+#gameBox{
+  background:#222;
+  border:3px solid #444;
+}
+.back{
+  margin-bottom:15px;
+  padding:6px 14px;
+  cursor:pointer;
+  border:none;
+  background:#409eff;
+  color:white;
+  border-radius:6px;
+  font-size:16px;
+}
+</style>
+</head>
+<body>
+<button class="back" onclick="location.href='/games/'">← 返回小游戏列表</button>
+<div id="score">分数：0</div>
+<canvas id="gameBox" width="400" height="400"></canvas>
+<script>
+const canvas = document.getElementById('gameBox');
+const ctx = canvas.getContext('2d');
+const scoreDom = document.getElementById('score');
+const size = 20;
+let snake = [{x:10,y:10}];
+let food = {x:15,y:10};
+let dir = 'right';
+let nextDir = 'right';
+let score = 0;
+
+function randomFood(){
+  let f;
+  outer:while(true){
+    f = {
+      x:Math.floor(Math.random()*(canvas.width/size)),
+      y:Math.floor(Math.random()*(canvas.height/size))
+    }
+    for(let s of snake){
+      if(s.x===f.x&&s.y===f.y) continue outer;
+    }
+    break;
+  }
+  food = f;
+}
+
+function draw(){
+  ctx.fillStyle='#222';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#4cd964';
+  for(let seg of snake){
+    ctx.fillRect(seg.x*size,seg.y*size,size-1,size-1);
+  }
+  ctx.fillStyle='#ff3b30';
+  ctx.fillRect(food.x*size,food.y*size,size-1,size-1);
+  scoreDom.innerText = `分数：${score}`;
+}
+
+function update(){
+  dir = nextDir;
+  let head = {...snake[0]};
+  if(dir==='right') head.x++;
+  if(dir==='left') head.x--;
+  if(dir==='up') head.y--;
+  if(dir==='down') head.y++;
+
+  //撞墙判定
+  if(head.x<0||head.x>=canvas.width/size||head.y<0||head.y>=canvas.height/size){
+    alert(`游戏结束！分数：${score}`);
+    snake = [{x:10,y:10}];
+    dir=nextDir='right';
+    score=0;
+    randomFood();
+    return;
+  }
+  //撞到自己
+  for(let s of snake){
+    if(s.x===head.x&&s.y===head.y){
+      alert(`游戏结束！分数：${score}`);
+      snake = [{x:10,y:10}];
+      dir=nextDir='right';
+      score=0;
+      randomFood();
+      return;
+    }
+  }
+
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){
+    score+=10;
+    randomFood();
+  }else{
+    snake.pop();
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'&&dir!=='right') nextDir='left';
+  if(e.key==='ArrowRight'&&dir!=='left') nextDir='right';
+  if(e.key==='ArrowUp'&&dir!=='down') nextDir='up';
+  if(e.key==='ArrowDown'&&dir!=='up') nextDir='down';
+})
+
+randomFood();
+setInterval(()=>{update();draw();},150);
+</script>
+</body>
+</html>

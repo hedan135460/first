@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2048</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial;background:#faf8ef;padding:10px}
+#container{max-width:340px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+h1{font-size:36px;color:#776e65}
+#score-box{background:#bbada0;color:white;padding:6px 12px;border-radius:6px;font-weight:bold}
+#grid{background:#bbada0;padding:8px;border-radius:8px}
+.row{display:flex;gap:8px;margin-bottom:8px}
+.row:last-child{margin-bottom:0}
+.cell{width:70px;height:70px;background:#cdc1b4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;color:#776e65}
+.cell-2{background:#eee4da}
+.cell-4{background:#ede0c8}
+.cell-8{background:#f2b179;color:white}
+.cell-16{background:#f59563;color:white}
+.cell-32{background:#f67c5f;color:white}
+.cell-64{background:#f65e3b;color:white}
+.cell-128{background:#edcf72;color:white;font-size:20px}
+.cell-256{background:#edcc61;color:white;font-size:20px}
+.cell-512{background:#edc850;color:white;font-size:20px}
+.cell-1024{background:#edc53f;color:white;font-size:16px}
+.cell-2048{background:#edc22e;color:white;font-size:16px}
+</style>
+</head>
+<body>
+<div id="container">
+  <header>
+    <h1>2048</h1>
+    <div id="score-box">分数: <span id="score">0</span></div>
+  </header>
+  <div id="grid"></div>
+</div>
+<script>
+const gridEl = document.getElementById('grid');
+const scoreEl = document.getElementById('score');
+let grid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+let score = 0;
+
+function render(){
+  gridEl.innerHTML = '';
+  for(let y=0;y<4;y++){
+    const rowDiv = document.createElement('div');
+    rowDiv.className='row';
+    for(let x=0;x<4;x++){
+      const cell = document.createElement('div');
+      const v = grid[y][x];
+      cell.className = 'cell' + (v ? (' cell-'+v) : '');
+      cell.innerText = v||'';
+      rowDiv.appendChild(cell);
+    }
+    gridEl.appendChild(rowDiv);
+  }
+  scoreEl.innerText = score;
+}
+
+function randomSpawn(){
+  let empty = [];
+  for(let y=0;y<4;y++) for(let x=0;x<4;x++) if(grid[y][x]===0) empty.push([x,y]);
+  if(!empty.length)return;
+  const [x,y] = empty[Math.floor(Math.random()*empty.length)];
+  grid[y][x] = Math.random()>0.9 ? 4 : 2;
+}
+
+function slide(arr){
+  let out = arr.filter(i=>i!==0);
+  for(let i=0;i<out.length-1;i++){
+    if(out[i]===out[i+1]){
+      out[i] *=2;
+      score += out[i];
+      out.splice(i+1,1);
+    }
+  }
+  while(out.length<4) out.push(0);
+  return out;
+}
+
+function move(d){
+  let old = JSON.parse(JSON.stringify(grid));
+  if(d==='left') for(let y=0;y<4;y++) grid[y]=slide(grid[y]);
+  if(d==='right') for(let y=0;y<4;y++) grid[y]=slide(grid[y].reverse()).reverse();
+  if(d==='up'){
+    for(let x=0;x<4;x++){
+      let col = [grid[0][x],grid[1][x],grid[2][x],grid[3][x]];
+      col = slide(col);
+      for(let y=0;y<4;y++) grid[y][x]=col[y];
+    }
+  }
+  if(d==='down'){
+    for(let x=0;x<4;x++){
+      let col = [grid[3][x],grid[2][x],grid[1][x],grid[0][x]];
+      col = slide(col);
+      grid[3][x]=col[0];grid[2][x]=col[1];grid[1][x]=col[2];grid[0][x]=col[3];
+    }
+  }
+  if(JSON.stringify(old)!==JSON.stringify(grid)){
+    randomSpawn();render();
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};
+  if(map[e.key]){e.preventDefault();move(map[e.key])}
+})
+
+//触屏滑动
+let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY})
+document.addEventListener('touchend',e=>{
+  let dx = e.changedTouches[0].clientX-tx;
+  let dy = e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>Math.abs(dy)){
+    move(dx>30?'right':dx<-30?'left':'');
+  }else{
+    move(dy>30?'down':dy<-30?'up':'');
+  }
+})
+
+randomSpawn();randomSpawn();render();
+</script>
+</body>
+</html>
