@@ -53,11 +53,11 @@ const cacheNames = ['def'];
 //
 // 改为按路径片段匹配，与部署基路径无关。
 let nochanges = [
-  '/fonts/',
-  '/img/',
-  '/apps/icons/',
-  '/scripts/jq.min.js',
-  '/bootstrap-icons.css',
+  'fonts/',
+  'img/',
+  'apps/icons/',
+  'scripts/jq.min.js',
+  'bootstrap-icons.css',
 ]
 
 /** 该 URL 是否属于「更新时保留」的资源 */
