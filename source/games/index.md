@@ -56,4 +56,11 @@ title: 小游戏
   <p>点击开始游戏</p>
 </div>
 
+<!--win12卡片-->
+<div class="game-card" onclick="window.open('/games/win12/index.html','_blank')">
+  <img src="/games/img/win12.png" alt="杀死国王">
+  <h4>win12</h4>
+  <p>点击开始游戏</p>
+</div>
+
 </div>
