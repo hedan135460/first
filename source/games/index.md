@@ -48,8 +48,8 @@ title: 小游戏
   <p>点击开始游戏</p>
 </div>
 <!-- win12卡片，使用你hlleo独立仓库外链 -->
-<div class="game-card" onclick="window.open('https://hedan135460.github.io/hlleo/boot.html','_blank')">
-  <img src="/games/img/win12.png" alt="win12 online">
+<div class="game-card" onclick="window.open('https://hlleo.pages.dev/boot.html','_blank')">
+  <img src="/games/img/win12.png" alt="win12‑online">
   <h4>win12‑online</h4>
   <p>点击开始游戏</p>
 </div>
