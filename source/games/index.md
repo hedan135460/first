@@ -57,8 +57,8 @@ title: 小游戏
 </div>
 
 <div class="game-card" onclick="window.open('/games/pvd/index.html','_blank')">
-  <img src="/games/img/pvd.png" alt="">
-  <h4></h4>
+  <img src="/games/img/pvd.png" alt="植物大战僵尸">
+  <h4>植物大战僵尸</h4>
   <p>点击开始游戏</p>
 </div>
 
